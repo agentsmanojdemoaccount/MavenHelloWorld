@@ -5,8 +5,8 @@ pool:
   name: Default
 
 steps:
-- script: echo "Pipeline working successfully"
-  displayName: 'Run script'
+- script: mvn clean package
+  displayName: 'Build Maven'
 
 - task: CopyFiles@2
   inputs:
