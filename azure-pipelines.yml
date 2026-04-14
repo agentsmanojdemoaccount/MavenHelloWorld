@@ -1,4 +1,9 @@
 trigger:
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**/*.jar'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 - master
 
 pool:
@@ -7,3 +12,8 @@ pool:
 steps:
 - script: echo "Pipeline working successfully"
   displayName: 'Run script'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'jar'
+    publishLocation: 'Container'
