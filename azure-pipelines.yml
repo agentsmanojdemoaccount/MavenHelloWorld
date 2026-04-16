@@ -1,20 +1,32 @@
-# cross check CI
 trigger:
 - master
 
 pool:
-  name: Default
+  vmImage: 'ubuntu-latest'
 
 steps:
-- script: mvn clean package
-  displayName: 'Build Maven'
 
+# Step 1: Build using Maven
+- script: mvn clean package
+  displayName: 'Build Maven Project'
+
+# Step 2: Copy JAR file to staging folder
 - task: CopyFiles@2
   inputs:
     SourceFolder: '$(System.DefaultWorkingDirectory)'
     Contents: '**/*.jar'
     TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
+# Step 3: Create ZIP file (IMPORTANT)
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+    replaceExistingArchive: true
+
+# Step 4: Publish Artifact
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)'
